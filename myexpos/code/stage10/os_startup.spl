@@ -18,6 +18,10 @@ loadi(64,14);
 loadi(4,17);
 loadi(5,18);
 
+// load int7
+loadi(16,29);
+loadi(17,30);
+
 PTBR=PAGE_TABLE_BASE;
 PTLR=10; //change
 
@@ -45,8 +49,9 @@ PTLR=10; //change
 [PTBR+18] = 77;
 [PTBR+19] = "0110";
 
-//[76*512] = 0;  // set TOS ka value to 0
-//SP = 2*512;  // TOS is logical page 2 (3rd page)
+[SYSTEM_STATUS_TABLE+1] = 0;
+[PROCESS_TABLE+1] = 0;
+[PROCESS_TABLE+11] = 80;
 
 [76*512] = [65*512 + 1];
 SP = 8*512;

@@ -11,7 +11,7 @@ loadi(2,15);
 loadi(3,16);
 
 PTBR=PAGE_TABLE_BASE;
-PTLR=18;
+PTLR=8;
 
 [PTBR+0] = -1;
 [PTBR+1] = "0000";  // Ref Valid Write Dirty

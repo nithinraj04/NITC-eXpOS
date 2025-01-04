@@ -45,6 +45,11 @@ PTLR=10; //change
 [PTBR+18] = 77;
 [PTBR+19] = "0110";
 
+[PROCESS_TABLE+11] = 80;
+[PROCESS_TABLE+1] = 0;
+
+[SYSTEM_STATUS_TABLE+1] = 1;
+
 //[76*512] = 0;  // set TOS ka value to 0
 //SP = 2*512;  // TOS is logical page 2 (3rd page)
 

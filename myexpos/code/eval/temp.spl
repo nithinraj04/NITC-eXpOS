@@ -1,0 +1,5 @@
+R0 = 1;
+while(R0 <= 5) do
+  print "*\n";
+  R0 = R0 + 1;
+endwhile;

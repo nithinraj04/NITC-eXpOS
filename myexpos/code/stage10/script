@@ -1,0 +1,6 @@
+load --os ../code/stage10/os_startup.xsm
+load --init ../code/stage10/squares.xsm
+load --int=10 ../code/stage10/int10.xsm
+load --int=7 ../code/stage10/int7.xsm
+load --exhandler ../code/stage10/int10.xsm
+load --int=timer ../code/stage10/timer.xsm

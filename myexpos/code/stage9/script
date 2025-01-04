@@ -1,0 +1,5 @@
+load --os ../code/stage9/os_startup.xsm
+load --init ../code/stage9/cubes.xsm
+load --int=10  ../code/stage9/int10.xsm
+load --exhandler ../code/stage9/int10.xsm
+load --int=timer ../code/stage9/timer.xsm

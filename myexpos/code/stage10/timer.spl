@@ -1,0 +1,11 @@
+[PROCESS_TABLE + (16 * [SYSTEM_STATUS_TABLE+1]) + 13] = SP;
+SP = 512 * [PROCESS_TABLE + (16 * [SYSTEM_STATUS_TABLE+1]) + 11] - 1;
+
+backup;
+
+print "Timer";
+
+restore;
+SP = [PROCESS_TABLE + (16 * [SYSTEM_STATUS_TABLE+1]) + 13];
+
+ireturn;
