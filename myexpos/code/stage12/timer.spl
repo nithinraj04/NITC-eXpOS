@@ -1,0 +1,44 @@
+//alias curr_pid R0;
+//curr_pid = [SYSTEM_STATUS_TABLE+1];
+
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13] = SP;
+SP = 512 * [PROCESS_TABLE + (16 * [SYSTEM_STATUS_TABLE+1]) + 11] + [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 12];
+
+backup;
+
+alias curr_pid R0;
+curr_pid = [SYSTEM_STATUS_TABLE+1];
+
+[PROCESS_TABLE + 16*curr_pid + 12] = SP%512;
+[PROCESS_TABLE + 16*curr_pid + 14] = PTBR;
+[PROCESS_TABLE + 16*curr_pid + 15] = PTLR;
+
+[PROCESS_TABLE + 16*curr_pid + 4] = READY;
+
+alias new_pid R1;
+if(curr_pid == 0) then
+    new_pid = 1;
+else
+    new_pid = 0;
+endif;
+
+SP = 512*[PROCESS_TABLE + 16*new_pid + 11] + [PROCESS_TABLE + 16*new_pid + 12];
+PTBR = [PROCESS_TABLE + 16*new_pid + 14];
+PTLR = [PROCESS_TABLE + 16*new_pid + 15];
+
+[SYSTEM_STATUS_TABLE + 1] = new_pid;
+
+if([PROCESS_TABLE + 16*new_pid + 4] != CREATED) then
+    [PROCESS_TABLE + 16*new_pid + 4] = RUNNING;
+    restore;
+    [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 12] = SP%512;
+else
+    print "no_restore";
+    [PROCESS_TABLE + 16*new_pid + 4] = RUNNING;
+endif;
+
+breakpoint;
+SP = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13];
+
+
+ireturn;

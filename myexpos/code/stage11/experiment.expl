@@ -1,0 +1,54 @@
+type
+    student{
+        int a;
+        int b;
+        int c;
+        int d;
+        int e;
+        int f;
+        int g;
+        int h;
+        int i;
+    }
+endtype
+
+int main(){
+decl
+    int temp;
+    student var, exp;
+enddecl
+
+begin
+    temp = initialize();
+    var = alloc();
+
+    var.a = 1;
+    var.b = 2;
+    var.c = 3;
+    var.d = 4;
+    var.e = 5;
+    var.f = 6;
+    var.g = 7;
+    var.h = 8;
+    var.i = 9;
+
+    exp.a = 1;
+
+    temp = exposcall("Write", -2, var.a);
+    temp = exposcall("Write", -2, var.b);
+    temp = exposcall("Write", -2, var.c);
+    temp = exposcall("Write", -2, var.d);
+    temp = exposcall("Write", -2, var.e);
+    temp = exposcall("Write", -2, var.f);
+    temp = exposcall("Write", -2, var.g);
+    temp = exposcall("Write", -2, var.h);
+    temp = exposcall("Write", -2, var.i);
+    temp = exposcall("Write", -2, exp.a);
+    temp = exposcall("Write", -2, var.i);
+
+    free(var);
+    free(exp);
+
+    return 0;
+end
+}

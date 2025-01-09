@@ -1,0 +1,5 @@
+MOV R16, "excption"
+PORT P1, R16
+OUT
+BRKP
+HALT

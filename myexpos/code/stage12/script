@@ -1,0 +1,2 @@
+load --os ../code/stage12/os_startup.xsm
+load --int=timer ../code/stage12/timer.xsm

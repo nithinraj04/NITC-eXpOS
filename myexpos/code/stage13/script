@@ -1,0 +1,2 @@
+load --os ../code/stage13/os_startup.xsm
+load --module 7 ../code/stage13/boot_module.xsm
