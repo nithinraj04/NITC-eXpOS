@@ -1,0 +1,28 @@
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 4] = TERMINATED;
+
+alias next_process R0;
+alias curr_process R1; 
+alias flag R2;
+curr_process = [SYSTEM_STATUS_TABLE+1];
+next_process = (curr_process+1)%16;
+flag = 0;
+
+while(next_process != curr_process) do
+    if(next_process == 0)then
+        next_process = 1; //efficiency ;-)
+        continue;
+    endif;
+    
+    if([PROCESS_TABLE + 16*next_process + 4] != TERMINATED) then
+        flag = 1;
+        break;
+    endif;
+
+    next_process = (next_process+1)%16;
+endwhile;
+
+if(flag == 1) then
+    call SCHEDULER;
+else
+    halt;
+endif;
