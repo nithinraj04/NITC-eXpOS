@@ -23,3 +23,29 @@ if(func_num == 3) then
     return;
 endif;
 
+if(func_num == 4) then
+    multipush(R0, R1, R2, R3);
+    R1 = 8;
+    //R2 remains same
+
+    call RESOURCE_MANAGER;
+
+    multipop(R0, R1, R2, R3);
+
+    read;
+
+    [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 4] = WAIT_TERMINAL;
+   
+    //calling scheduler
+
+    multipush(R0, R1, R2, R3);
+    call SCHEDULER;
+    multipop(R0, R1, R2, R3);
+
+    //compute physical address for return value
+
+    R4 = 512*[PTBR + 2*arg1/512] + arg1%512;
+    breakpoint;
+    [R4] = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 8];
+    return;
+endif;

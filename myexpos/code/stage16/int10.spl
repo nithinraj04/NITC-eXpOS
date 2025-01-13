@@ -24,5 +24,6 @@ endwhile;
 if(flag == 1) then
     call SCHEDULER;
 else
+    print "halting";
     halt;
 endif;

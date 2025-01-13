@@ -54,6 +54,9 @@ JZ R16, _L7
 CALL 25600
 JMP _L8
 _L7:
+MOV R16, "halting"
+PORT P1, R16
+OUT
 HALT
 _L8:
 HALT

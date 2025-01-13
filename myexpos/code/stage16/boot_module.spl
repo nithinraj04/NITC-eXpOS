@@ -2,6 +2,14 @@
 loadi(63,13);
 loadi(64,14);
 
+//load int 6
+loadi(14,27);
+loadi(15,28);
+
+//load console interrupt
+loadi(8,21);
+loadi(9,22);
+
 //load resource manager (module 0)
 loadi(40,53);
 loadi(41,54);
@@ -13,9 +21,6 @@ loadi(49,62);
 //load init
 loadi(65,7);
 loadi(66,8);
-
-//load even.xsm
-loadi(83,69);
 
 //load scheduler (module 5)
 loadi(50,63);
@@ -77,40 +82,41 @@ PTLR = 10;
 
 //Page table for even.xsm
 
-[PTBR+40+0] = 63;
-[PTBR+40+1] = "0100";
-[PTBR+40+2] = 64;
-[PTBR+40+3] = "0100";
-
-[PTBR+40+4] = 84;
-[PTBR+40+5] = "0110";
-[PTBR+40+6] = 85;
-[PTBR+40+7] = "0110";
-
-[PTBR+40+8] = 83;
-[PTBR+40+9] = "0100";
-[PTBR+40+10] = -1;
-[PTBR+40+11] = "0000";
-[PTBR+40+12] = -1;
-[PTBR+40+13] = "0000";
-[PTBR+40+14] = -1;
-[PTBR+40+15] = "0000";
-
-[PTBR+40+16] = 86;
-[PTBR+40+17] = "0110";
-[PTBR+40+18] = 87;
-[PTBR+40+19] = "0110";
+//[PTBR+40+0] = 63;
+//[PTBR+40+1] = "0100";
+//[PTBR+40+2] = 64;
+//[PTBR+40+3] = "0100";
+//
+//[PTBR+40+4] = 84;
+//[PTBR+40+5] = "0110";
+//[PTBR+40+6] = 85;
+//[PTBR+40+7] = "0110";
+//
+//[PTBR+40+8] = 83;
+//[PTBR+40+9] = "0100";
+//[PTBR+40+10] = -1;
+//[PTBR+40+11] = "0000";
+//[PTBR+40+12] = -1;
+//[PTBR+40+13] = "0000";
+//[PTBR+40+14] = -1;
+//[PTBR+40+15] = "0000";
+//
+//[PTBR+40+16] = 86;
+//[PTBR+40+17] = "0110";
+//[PTBR+40+18] = 87;
+//[PTBR+40+19] = "0110";
 
 //Process table entries for even.xsm
-[PROCESS_TABLE+32+1] = 2;
-[PROCESS_TABLE+32+4] = CREATED;
-[PROCESS_TABLE+32+11] = 88; //User area
-[PROCESS_TABLE+32+12] = 0; //kernel stack (offset)
-[PROCESS_TABLE+32+13] = 8*512;  //user stack
-[PROCESS_TABLE+32+14] = PAGE_TABLE_BASE+40; //PTBR
-[PROCESS_TABLE+32+15] = 10; //PTLR
+//[PROCESS_TABLE+32+1] = 2;
+//[PROCESS_TABLE+32+4] = CREATED;
+//[PROCESS_TABLE+32+11] = 88; //User area
+//[PROCESS_TABLE+32+12] = 0; //kernel stack (offset)
+//[PROCESS_TABLE+32+13] = 8*512;  //user stack
+//[PROCESS_TABLE+32+14] = PAGE_TABLE_BASE+40; //PTBR
+//[PROCESS_TABLE+32+15] = 10; //PTLR
 
 //set every other process table entry to TERMINATED
+[PROCESS_TABLE+16*2+4] = TERMINATED;
 [PROCESS_TABLE+16*3+4] = TERMINATED;
 [PROCESS_TABLE+16*4+4] = TERMINATED;
 [PROCESS_TABLE+16*5+4] = TERMINATED;
@@ -127,5 +133,5 @@ PTLR = 10;
 
 
 [76*512] = [65*512 + 1]; //init
-[86*512] = [83*512 + 1]; //even.xsm
+//[86*512] = [83*512 + 1]; //even.xsm
 return;
