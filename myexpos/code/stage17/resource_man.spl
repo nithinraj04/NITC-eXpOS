@@ -1,0 +1,39 @@
+alias ret_val R0;
+alias func_num R1;
+alias curr_pid R2;
+
+if(func_num == 8) then
+    while([TERMINAL_STATUS_TABLE] == 1) do
+        [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 4] = WAIT_TERMINAL;
+        multipush(R0, R1, R2);
+        call SCHEDULER;
+        multipop(R0, R1, R2);
+    endwhile;
+
+    [TERMINAL_STATUS_TABLE] = 1;
+    [TERMINAL_STATUS_TABLE+1] = curr_pid;
+    return;
+endif;
+
+if(func_num == 9)then
+    if([TERMINAL_STATUS_TABLE+1] != curr_pid) then
+        R0 = -1;
+        return;
+    endif;
+
+    [TERMINAL_STATUS_TABLE] = 0;
+
+    R1 = 1;
+    
+    while(R1 < 16) do
+        if([PROCESS_TABLE + 16*R1 + 4] == WAIT_TERMINAL) then
+            [PROCESS_TABLE + 16*R1 + 4] = READY;
+        endif;
+        R1 = R1+1;
+    endwhile;
+
+    R0 = 0;
+    return;
+endif;
+
+

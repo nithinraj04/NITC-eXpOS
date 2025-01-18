@@ -1,0 +1,103 @@
+alias user_sp R0;
+user_sp = SP;
+
+alias curr_pid R1;
+curr_pid = [SYSTEM_STATUS_TABLE+1]
+
+[PROCESS_TABLE + 16*curr_pid + 13] = SP;
+SP = [PROCESS_TABLE + 16*curr_pid + 11]*512 - 1;
+
+// Exec syscall number is 9
+[PROCESS_TABLE + 16*curr_pid + 9] = 9; 
+
+alias file_name R2; //-3
+file_name = [[PTBR + 2*(user_sp - 3)/512]*512 + (user_sp - 3)%512];
+
+//Search for the file in inode table
+alias temp R3;
+temp = 0;
+while(temp < 60)do
+    if(
+        [INODE_TABLE + temp*16 + 0] == EXEC
+        &&
+        [INODE_TABLE + temp*16 + 1] == file_name
+    )then    
+        break;
+    endif;
+
+    temp = temp+1;
+endwhile;
+
+if(temp >= 60) then
+    [[PTBR + 2*(user_sp-1)/512]*512 + (user_sp-1)%512] = -1;
+    SP = [PROCESS_TABLE + 16*curr_pid + 13];
+    [PROCESS_TABLE + 16*curr_pid + 9] = 0;
+    ireturn;
+endif;
+
+//Calling exit process function of process manager (module 1)
+
+multipush(R0, R1, R2, R3);
+R1 = 3;
+R2 = curr_pid;
+call PROCESS_MODULE;
+multipop(R0, R1, R2, R3);
+
+//Reclaim the user area page
+
+[SYSTEM_STATUS_TABLE+2] = [SYSTEM_STATUS_TABLE+2]-1;
+
+SP = [PROCESS_TABLE + 16*curr_pid + 11]*512 - 1;
+
+[PROCESS_TABLE + 16*curr_pid + 4] = RUNNING;
+[PROCESS_TABLE + 16*curr_pid + 7] = temp; //inode index
+
+//Allocate pages and set page table entries
+
+[PTBR + 0] = 63;
+[PTBR + 1] = "0100";
+[PTBR + 2] = 64;
+[PTBR + 3] = "0100";
+
+multipush(R0, R1, R2, R3);
+R1 = 1;
+call MEMORY_MANAGER;
+[PTBR + 4] = R0;
+[PTBR + 5] = "0110";
+call MEMORY_MANAGER;
+[PTBR + 6] = R0;
+[PTBR + 7] = "0110";
+multipop(R0, R1, R2, R3);
+
+multipush(R0, R1, R2, R3);
+R1 = 1;
+call MEMORY_MANAGER;
+[PTBR + 16] = R0;
+[PTBR + 17] = "0110";
+call MEMORY_MANAGER;
+[PTBR + 18] = R0;
+[PTBR + 19] = "0110";
+multipop(R0, R1, R2, R3);
+
+//I hope this works :-|
+multipush(R0, R1, R2, R3);
+R1 = INODE_TABLE + 16*temp + 8;
+R0 = 0;
+while(R0 < 4) do
+    if([R1 + R0] != -1) do
+        multipush(R0, R1);
+        R1 = 1;
+        call MEMORY_MANAGER;
+        R3 = R0;
+        multipop(R0, R1);
+        [PTBR + 8 + 2*R0 + 0] = R3;
+        [PTBR + 8 + 2*R0 + 1] = "0110";
+    else
+        [PTBR + 8 + 2*R0 + 0] = -1;
+        [PTBR + 8 + 2*R0 + 1] = "0000";
+    endif;
+    R0 = R0 + 1
+endwhile;
+
+multipop(R0, R1, R2, R3);
+
