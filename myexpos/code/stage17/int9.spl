@@ -2,7 +2,7 @@ alias user_sp R0;
 user_sp = SP;
 
 alias curr_pid R1;
-curr_pid = [SYSTEM_STATUS_TABLE+1]
+curr_pid = [SYSTEM_STATUS_TABLE+1];
 
 [PROCESS_TABLE + 16*curr_pid + 13] = SP;
 SP = [PROCESS_TABLE + 16*curr_pid + 11]*512 - 1;
@@ -38,16 +38,19 @@ endif;
 //Calling exit process function of process manager (module 1)
 
 multipush(R0, R1, R2, R3);
+R2 = curr_pid; //curr_pid was contained in R1
 R1 = 3;
-R2 = curr_pid;
-call PROCESS_MODULE;
+call PROCESS_MANAGER;
 multipop(R0, R1, R2, R3);
 
 //Reclaim the user area page
 
-[SYSTEM_STATUS_TABLE+2] = [SYSTEM_STATUS_TABLE+2]-1;
+alias user_area_page_no R4;
+user_area_page_no = [PROCESS_TABLE + 16*curr_pid + 11];
+SP = user_area_page_no*512 - 1;
 
-SP = [PROCESS_TABLE + 16*curr_pid + 11]*512 - 1;
+[SYSTEM_STATUS_TABLE+2] = [SYSTEM_STATUS_TABLE+2]-1;
+[MEMORY_FREE_LIST + user_area_page_no] = [MEMORY_FREE_LIST + user_area_page_no] + 1;  
 
 [PROCESS_TABLE + 16*curr_pid + 4] = RUNNING;
 [PROCESS_TABLE + 16*curr_pid + 7] = temp; //inode index
@@ -64,6 +67,7 @@ R1 = 1;
 call MEMORY_MANAGER;
 [PTBR + 4] = R0;
 [PTBR + 5] = "0110";
+R1 = 1;
 call MEMORY_MANAGER;
 [PTBR + 6] = R0;
 [PTBR + 7] = "0110";
@@ -74,6 +78,7 @@ R1 = 1;
 call MEMORY_MANAGER;
 [PTBR + 16] = R0;
 [PTBR + 17] = "0110";
+R1 = 1;
 call MEMORY_MANAGER;
 [PTBR + 18] = R0;
 [PTBR + 19] = "0110";
@@ -84,7 +89,7 @@ multipush(R0, R1, R2, R3);
 R1 = INODE_TABLE + 16*temp + 8;
 R0 = 0;
 while(R0 < 4) do
-    if([R1 + R0] != -1) do
+    if([R1 + R0] != -1) then
         multipush(R0, R1);
         R1 = 1;
         call MEMORY_MANAGER;
@@ -92,12 +97,23 @@ while(R0 < 4) do
         multipop(R0, R1);
         [PTBR + 8 + 2*R0 + 0] = R3;
         [PTBR + 8 + 2*R0 + 1] = "0110";
+
+        //Also load the blocks
+        loadi(R3, [R1+R0]);
     else
         [PTBR + 8 + 2*R0 + 0] = -1;
         [PTBR + 8 + 2*R0 + 1] = "0000";
     endif;
-    R0 = R0 + 1
+    R0 = R0 + 1;
 endwhile;
 
 multipop(R0, R1, R2, R3);
 
+//Store entry point at TOS 
+[512*[PTBR + 16]] = [[PTBR + 8]*512 + 1];
+
+//Wait, aren't we supposed to save the new user SP in process table?
+
+SP = 8*512;
+
+ireturn;

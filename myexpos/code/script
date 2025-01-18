@@ -10,3 +10,6 @@ load --module 4 ../code/stage${stage}/device_man.xsm
 load --module 0 ../code/stage${stage}/resource_man.xsm
 load --int=6 ../code/stage${stage}/int6.xsm
 load --int=console ../code/stage${stage}/console.xsm
+load --int=9 ../code/stage${stage}/int9.xsm
+load --module 1 ../code/stage${stage}/process_man.xsm
+load --module 2 ../code/stage${stage}/memory_man.xsm

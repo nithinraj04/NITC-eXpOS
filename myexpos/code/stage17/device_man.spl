@@ -45,7 +45,6 @@ if(func_num == 4) then
     //compute physical address for return value
 
     R4 = 512*[PTBR + 2*arg1/512] + arg1%512;
-    breakpoint;
     [R4] = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 8];
     return;
 endif;

@@ -1,0 +1,44 @@
+alias ret_val R0;
+alias fn_num R1;
+alias arg1 R2;
+
+if(fn_num == 1) then
+    [SYSTEM_STATUS_TABLE + 3] = [SYSTEM_STATUS_TABLE + 3] + 1;
+    while([SYSTEM_STATUS_TABLE + 2] == 0) do
+        [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 4] = WAIT_MEM;
+        multipush(R0, R1, R2);
+        call SCHEDULER;
+        multipop(R0, R1, R2);
+    endwhile;
+
+    [SYSTEM_STATUS_TABLE + 3] = [SYSTEM_STATUS_TABLE + 3] - 1;
+    [SYSTEM_STATUS_TABLE + 2] = [SYSTEM_STATUS_TABLE + 2] - 1;
+
+    R3 = 0;
+    while(R3 < MAX_MEM_PAGE) do
+        if([MEMORY_FREE_LIST + R3] == 0) then
+            ret_val = R3; //Return value
+            [MEMORY_FREE_LIST + R3] = 1;
+            break;
+        endif;
+        R3 = R3 + 1;
+    endwhile;
+    
+    return;
+endif;
+
+if(fn_num == 2) then
+    [MEMORY_FREE_LIST + arg1] = [MEMORY_FREE_LIST + arg1] - 1;
+    if([MEMORY_FREE_LIST + arg1] == 0) then
+        [SYSTEM_STATUS_TABLE + 2] = [SYSTEM_STATUS_TABLE + 2] + 1;
+        R3 = 1;
+        while(R3 < 16) do
+            if([PROCESS_TABLE + 16*R3 + 4] == WAIT_MEM) then
+                [PROCESS_TABLE + 16*R3 + 4] = READY;
+            endif;
+            R3 = R3 + 1;
+        endwhile;
+    endif;
+
+    return;
+endif;

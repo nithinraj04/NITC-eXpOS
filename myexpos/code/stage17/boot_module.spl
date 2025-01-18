@@ -2,6 +2,27 @@
 loadi(63,13);
 loadi(64,14);
 
+//load inode table (and user table)
+loadi(59,3);
+loadi(60,4);
+
+//load int 9 (exec)
+loadi(20,33);
+loadi(21,34);
+
+//load resource manager (module 0)
+loadi(40,53);
+loadi(41,54);
+
+
+//load module 1 (process manager)
+loadi(42,55);
+loadi(43,56);
+
+//load module 2 (memory manager)
+loadi(44,57);
+loadi(45,58);
+
 //load int 6
 loadi(14,27);
 loadi(15,28);
@@ -9,10 +30,6 @@ loadi(15,28);
 //load console interrupt
 loadi(8,21);
 loadi(9,22);
-
-//load resource manager (module 0)
-loadi(40,53);
-loadi(41,54);
 
 //load device manager (module 4)
 loadi(48,61);
@@ -41,6 +58,30 @@ loadi(3,16);
 //load timer
 loadi(4,17);
 loadi(5,18);
+
+// -------------------------------------------------- //
+
+//set memory free list
+
+R0 = 0;
+while(R0 < 76) do
+    [MEMORY_FREE_LIST + R0] = 1;
+    R0 = R0 + 1;
+endwhile;
+while(R0 < 128) do
+    [MEMORY_FREE_LIST + R0] = 0;
+    R0 = R0 + 1;
+endwhile;
+R0 = 76;
+while(R0 < 83) do //These are the pages used for idle and init
+    [MEMORY_FREE_LIST + R0] = 1;
+    R0 = R0 + 1;
+endwhile;
+R0 = 0;
+
+//Initialize system status table
+[SYSTEM_STATUS_TABLE + 2] = 45;
+[SYSTEM_STATUS_TABLE + 3] = 0;
 
 //Initialize page table for init
 

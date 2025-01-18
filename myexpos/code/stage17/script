@@ -1,12 +1,15 @@
-load --os ../code/stage16/os_startup.xsm
-load --module 7 ../code/stage16/boot_module.xsm
-load --int=timer ../code/stage16/timer.xsm
-load --int=10 ../code/stage16/int10.xsm
-load --init ../code/stage16/init.xsm
-load --idle ../code/stage16/idle.xsm
-load --module 5 ../code/stage16/scheduler.xsm
-load --int=7 ../code/stage16/int7.xsm
-load --module 4 ../code/stage16/device_man.xsm
-load --module 0 ../code/stage16/resource_man.xsm
-load --int=6 ../code/stage16/int6.xsm
-load --int=console ../code/stage16/console.xsm
+load --os ../code/stage17/os_startup.xsm
+load --module 7 ../code/stage17/boot_module.xsm
+load --int=timer ../code/stage17/timer.xsm
+load --int=10 ../code/stage17/int10.xsm
+load --init ../code/stage17/init.xsm
+load --idle ../code/stage17/idle.xsm
+load --module 5 ../code/stage17/scheduler.xsm
+load --int=7 ../code/stage17/int7.xsm
+load --module 4 ../code/stage17/device_man.xsm
+load --module 0 ../code/stage17/resource_man.xsm
+load --int=6 ../code/stage17/int6.xsm
+load --int=console ../code/stage17/console.xsm
+load --int=9 ../code/stage17/int9.xsm
+load --module 1 ../code/stage17/process_man.xsm
+load --module 2 ../code/stage17/memory_man.xsm
