@@ -13,3 +13,4 @@ load --int=console ../code/stage${stage}/console.xsm
 load --int=9 ../code/stage${stage}/int9.xsm
 load --module 1 ../code/stage${stage}/process_man.xsm
 load --module 2 ../code/stage${stage}/memory_man.xsm
+load --int=disk ../code/stage${stage}/disk_int.xsm
