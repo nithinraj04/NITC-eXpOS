@@ -15,5 +15,6 @@ load --module 1 ../code/stage${stage}/process_man.xsm
 load --module 2 ../code/stage${stage}/memory_man.xsm
 load --int=disk ../code/stage${stage}/disk_int.xsm
 load --exhandler ../code/stage${stage}/exhandler.xsm
+load --int=8 ../code/stage${stage}/int8.xsm
 rm linked_l.xsm
 load --exec ../code/stage${stage}/linked_l.xsm

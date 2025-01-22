@@ -1,0 +1,20 @@
+load --os ../code/stage20/os_startup.xsm
+load --module 7 ../code/stage20/boot_module.xsm
+load --int=timer ../code/stage20/timer.xsm
+load --int=10 ../code/stage20/int10.xsm
+load --init ../code/stage20/init.xsm
+load --idle ../code/stage20/idle.xsm
+load --module 5 ../code/stage20/scheduler.xsm
+load --int=7 ../code/stage20/int7.xsm
+load --module 4 ../code/stage20/device_man.xsm
+load --module 0 ../code/stage20/resource_man.xsm
+load --int=6 ../code/stage20/int6.xsm
+load --int=console ../code/stage20/console.xsm
+load --int=9 ../code/stage20/int9.xsm
+load --module 1 ../code/stage20/process_man.xsm
+load --module 2 ../code/stage20/memory_man.xsm
+load --int=disk ../code/stage20/disk_int.xsm
+load --exhandler ../code/stage20/exhandler.xsm
+load --int=8 ../code/stage20/int8.xsm
+rm linked_l.xsm
+load --exec ../code/stage20/linked_l.xsm

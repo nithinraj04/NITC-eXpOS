@@ -1,0 +1,32 @@
+int main(){
+decl
+    int prog,temp;
+    str out;
+enddecl
+begin
+    
+    temp = exposcall("Fork");
+    
+    if(temp == -1) then
+        out = "Fork failed";
+        temp = exposcall("Write", -2, out);
+    endif;
+
+    if(temp == 0) then
+        out = "child prog :";
+        write(out);
+        read(prog);
+        temp = exposcall("Exec", prog);
+    else
+        out = "parent prog :";
+        write(out);
+        read(prog);
+        temp = exposcall("Exec", prog);
+    endif;
+
+    
+
+    return 0;
+end
+}
+
