@@ -51,7 +51,7 @@ endif;
 
 if(fn_num == 5) then //Get code page
     R3 = 0;
-    while(R3 < 60) do
+    while(R3 < 16) do
         R4 = 0;
         while(R4 < 4) do
             if([DISK_MAP_TABLE + 10*R3 + 4 + R4] == arg1) then //arg1 is R2
