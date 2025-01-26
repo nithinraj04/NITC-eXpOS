@@ -39,7 +39,7 @@ endif;
 
 multipush(R0, R1, R2, R3);
 R2 = curr_pid; //curr_pid was contained in R1
-R1 = 3;
+R1 = 3; //exit process
 call PROCESS_MANAGER;
 multipop(R0, R1, R2, R3);
 
