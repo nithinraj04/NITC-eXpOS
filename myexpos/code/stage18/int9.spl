@@ -10,8 +10,8 @@ SP = [PROCESS_TABLE + 16*curr_pid + 11]*512 - 1;
 // Exec syscall number is 9
 [PROCESS_TABLE + 16*curr_pid + 9] = 9; 
 
-alias file_name R2; //-3
-file_name = [[PTBR + 2*(user_sp - 3)/512]*512 + (user_sp - 3)%512];
+alias file_name R2; //-4
+file_name = [[PTBR + 2*(user_sp - 4)/512]*512 + (user_sp - 4)%512];
 
 //Search for the file in inode table
 alias temp R3;

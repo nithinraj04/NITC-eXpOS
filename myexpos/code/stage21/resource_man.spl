@@ -1,0 +1,53 @@
+alias ret_val R0;
+alias func_num R1;
+alias arg_1 R2;
+
+if(func_num == 3) then //acquire disk
+    while([DISK_STATUS_TABLE] == 1) do
+        [PROCESS_TABLE + 16*arg_1 + 4] = WAIT_DISK;
+        multipush(R0, R1, R2);
+        call SCHEDULER;
+        multipop(R0, R1, R2);
+    endwhile;
+
+    [DISK_STATUS_TABLE + 0] = 1;
+    [DISK_STATUS_TABLE + 4] = arg_1;
+
+    return;
+endif;
+
+if(func_num == 8) then
+    while([TERMINAL_STATUS_TABLE] == 1) do
+        [PROCESS_TABLE + 16*arg_1 + 4] = WAIT_TERMINAL;
+        multipush(R0, R1, R2);
+        call SCHEDULER;
+        multipop(R0, R1, R2);
+    endwhile;
+
+    [TERMINAL_STATUS_TABLE] = 1;
+    [TERMINAL_STATUS_TABLE+1] = arg_1;
+    return;
+endif;
+
+if(func_num == 9)then
+    if([TERMINAL_STATUS_TABLE+1] != arg_1) then
+        R0 = -1;
+        return;
+    endif;
+
+    [TERMINAL_STATUS_TABLE] = 0;
+
+    R1 = 1;
+    
+    while(R1 < 16) do
+        if([PROCESS_TABLE + 16*R1 + 4] == WAIT_TERMINAL) then
+            [PROCESS_TABLE + 16*R1 + 4] = READY;
+        endif;
+        R1 = R1+1;
+    endwhile;
+
+    R0 = 0;
+    return;
+endif;
+
+
