@@ -20,3 +20,5 @@ rm linked_l.xsm
 load --exec ../code/stage${stage}/linked_l.xsm
 load --int=11 ../code/stage${stage}/int11.xsm
 load --int=15 ../code/stage${stage}/int15.xsm
+load --int=13 ../code/stage${stage}/int13.xsm
+load --int=14 ../code/stage${stage}/int14.xsm
