@@ -44,13 +44,14 @@ call MEMORY_MANAGER;
 multipop(R1, R2, R3);
 
 R4 = PROCESS_TABLE + 16*child_pid; //efficiency :-)
+R5 = PROCESS_TABLE + 16*curr_pid;  //efficiency :-)
 
 //Initializing process table entries of child
-[R4 + 3] = [PROCESS_TABLE + 16*curr_pid + 3]; //copy userid
-[R4 + 6] = [PROCESS_TABLE + 16*curr_pid + 6]; //copy swap flag
-[R4 + 7] = [PROCESS_TABLE + 16*curr_pid + 7]; //copy inode index
-[R4 + 10] = [PROCESS_TABLE + 16*curr_pid + 10]; //copy user area swap status
-[R4 + 13] = [PROCESS_TABLE + 16*curr_pid + 13]; //copy user SP
+[R4 + 3] = [R5 + 3]; //copy userid
+[R4 + 6] = [R5 + 6]; //copy swap flag
+[R4 + 7] = [R5 + 7]; //copy inode index
+[R4 + 10] = [R5 + 10]; //copy user area swap status
+[R4 + 13] = [R5 + 13]; //copy user SP
 
 [R4 + 0] = 0; //set TICK
 [R4 + 2] = curr_pid; //set PPID
@@ -67,6 +68,10 @@ R5 = ([PROCESS_TABLE + 16*curr_pid + 11] + 1)*512 - 16;
 R6 = 0;
 while(R6 < 16) do
     [R4 + R6] = [R5 + R6];
+    if(R6 % 2 == 0 && [R4 + R6] == SEMAPHORE) then
+        R7 = [R4 + R6 + 1]; //R7 holds semaphore table index
+        [SEMAPHORE_TABLE + 4*R7 + 1] = [SEMAPHORE_TABLE + 4*R7 + 1] + 1;
+    endif;
     R6 = R6 + 1;
 endwhile;
 
@@ -133,12 +138,11 @@ R10 = [PROCESS_TABLE + 16*curr_pid + 13];
 
 alias child_sp R9;
 
-alias child_ptbr R4;
-alias curr_ptbr R5;
+alias child_ptbr R4; //Value already set
+alias curr_ptbr R5; //Value already set
 
 [[child_ptbr + 2*(child_sp-1)/512]*512 + (child_sp-1)%512] = 0;
 [[curr_ptbr + 2*(user_sp-1)/512]*512 + (user_sp-1)%512] = child_pid;
-
 
 [PROCESS_TABLE + 16*curr_pid + 9] = 0;
 SP = user_sp;

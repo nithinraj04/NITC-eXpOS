@@ -29,8 +29,8 @@ PTLR = [R1 + 15];
 [SYSTEM_STATUS_TABLE + 1] = curr_process;
 
 if([R1 + 4] == CREATED) then
-    BP = [(SP/512) * 512]; //This value will be set by fork system call
     SP = [PROCESS_TABLE + 16*curr_process + 13];
+    BP = [[PROCESS_TABLE + 16*curr_process + 11]*512]; //This value will be set by fork system call
     [R1 + 4] = RUNNING;
     [R1 + 9] = 0; //mode flag
     ireturn;

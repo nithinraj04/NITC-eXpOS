@@ -1,6 +1,6 @@
 int main(){
 decl
-    int temp, child;
+    int temp, child, n;
     str out, prog;
 enddecl
 begin
@@ -30,6 +30,8 @@ begin
                 if(temp == -1) then
                     out = "BAD COMMAND";
                     write(out);
+                    n = 0;
+                    temp = exposcall("Exit");
                 endif;
                 temp = exposcall("Signal");
             else //inside parent

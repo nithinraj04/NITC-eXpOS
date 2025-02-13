@@ -14,6 +14,7 @@ if(EC != 0) then
     endif;
     if(EC == 2) then
         R3 = "Illegal memory";
+        breakpoint;
     endif;
     if(EC == 3) then
         R3 = "Arithmetic exception";

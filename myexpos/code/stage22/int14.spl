@@ -48,8 +48,10 @@ if(syscall_num == 19) then //semlock
         multipop(R0, R1, R2, R3, R4, R5, R6, R7, R8);
     endwhile;
 
-    [SEMAPHORE_TABLE + 4*arg1] = pid;
-
+    [SEMAPHORE_TABLE + 4*sem_table_index] = pid;
+   
+    breakpoint;
+    R0 = 0;
     goto return_to_user;
 endif;
 
@@ -77,7 +79,7 @@ if(syscall_num == 20) then //semunlock
 
         R9 = 0;
         while(R9 < 16) do
-            R10 = PROCESS_TABLE + 16*pid;
+            R10 = PROCESS_TABLE + 16*R9;
             if(
                 [R10 + 4] == WAIT_SEMAPHORE
                 &&
@@ -85,7 +87,7 @@ if(syscall_num == 20) then //semunlock
               )
             then
                 
-                [PROCESS_TABLE + 16*pid + 4] = READY;
+                [R10 + 4] = READY;
             endif;
             R9 = R9+1;
         endwhile;

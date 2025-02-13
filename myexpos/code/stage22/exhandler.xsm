@@ -49,6 +49,7 @@ MOV R16, 2
 EQ R16, EC
 JZ R16, _L5
 MOV R3, "Illegal memory"
+BRKP
 JMP _L6
 _L5:
 _L6:

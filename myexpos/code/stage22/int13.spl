@@ -51,7 +51,6 @@ if(syscall_num == 17) then //Semget syscall
     [resouce_table + R7 + 1] = R0;
 
     [ret_addr] = R7/2;
-    breakpoint;
     goto return_to_user;
 endif;
 

@@ -13,26 +13,5 @@ R2 = pid; //pid is R0
 call PROCESS_MANAGER;
 multipop(R0, R1);
 
-if(mode_flag != 9) then
-    R2 = 0;
-    while(R2 < 16) do
-        if(
-            [PROCESS_TABLE + 16*R2 + 4] == WAIT_PROCESS
-            &&
-            [PROCESS_TABLE + 16*R2 + 5] == pid
-          )
-        then
-            
-            [PROCESS_TABLE + 16*R2 + 4] = READY;
-        endif;
-
-        if([PROCESS_TABLE + 16*R2 + 2] == pid) then
-            [PROCESS_TABLE + 16*R2 + 2] = -1;
-        endif;
-
-        R2 = R2+1;
-    endwhile;
-endif;
-
 call SCHEDULER;
 return;
