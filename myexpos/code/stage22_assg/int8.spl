@@ -131,11 +131,6 @@ endwhile;
 //Store BP on top of kernel stack of child process
 [[PROCESS_TABLE + 16*child_pid + 11]*512] = BP;
 
-//Set status to CREATED. If this step was done earlier,
-//if we end up waiting for memory, scheduler will go ahead
-//and schedule this partially created child
-[PROCESS_TABLE + 16*child_pid + 4] = CREATED;
-
 //Setup return values to parent and child process
 R9 = [PROCESS_TABLE + 16*child_pid + 13];
 R10 = [PROCESS_TABLE + 16*curr_pid + 13];
@@ -148,6 +143,9 @@ alias curr_ptbr R5; //Value already set
 [[child_ptbr + 2*(child_sp-1)/512]*512 + (child_sp-1)%512] = 0;
 [[curr_ptbr + 2*(user_sp-1)/512]*512 + (user_sp-1)%512] = child_pid;
 
+[PROCESS_TABLE + 16*child_pid + 4] = CREATED; //set state
+
 [PROCESS_TABLE + 16*curr_pid + 9] = 0;
 SP = user_sp;
+breakpoint;
 ireturn;
