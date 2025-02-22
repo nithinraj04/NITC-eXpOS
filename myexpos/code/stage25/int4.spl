@@ -35,8 +35,11 @@ if(syscall_num == 1) then //create
 
     R7 = 0;
     while(R7 < MAX_FILE_NUM) do
-        if([INODE_TABLE + 16*R7 + 1] == -1) then
-            break;
+        //----My own implementation, proceed with caution----------------//
+        if([INODE_TABLE + 16*R7 + 1] == -1) then  //Free entry
+            if([INODE_TABLE + 16*R7 + 5] == -1) then  //Waiting processes don't exist
+                break;
+            endif;
         endif;
         R7 = R7 + 1;
     endwhile;
@@ -112,14 +115,14 @@ if(syscall_num == 4) then  //delete
     call RESOURCE_MANAGER;
     multipop(R1, R2, R3, R4, R5, R6, R7);
     
-    //----------My own implementation----------------//
+    //----------My own implementation, proceed with caution-----------//
     if(R0 == -1) then  //File got deleted by some other process
         [ret_addr] = 0;
         goto return_to_user;
     endif;
 
 
-    if([FILE_STATUS_TABLE + 4*R7 + 1] != -1 || [INODE_TABLE + 16*R7 + 1] != arg1) then
+    if([FILE_STATUS_TABLE + 4*R7 + 1] != -1) then
         multipush(R1, R2, R3, R4, R5, R6, R7);
         R1 = 5;  //release inode
         R2 = R7;
@@ -130,7 +133,6 @@ if(syscall_num == 4) then  //delete
         [ret_addr] = -2; //File is open
         goto return_to_user;
     endif;
-    //--------------End of my own implementation----------------//
 
     R8 = INODE_TABLE + 16*R7 + 8;
     R9 = 0;

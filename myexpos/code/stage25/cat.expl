@@ -16,7 +16,9 @@ begin
         temp = 0;
         while(temp == 0) do
             temp = exposcall("Read", fd, buf);
-            write(buf);
+            if(temp == 0) then
+                write(buf);
+            endif;
         endwhile;
     endif;
 
