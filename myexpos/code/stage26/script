@@ -1,0 +1,31 @@
+load --os ../code/stage26/os_startup.xsm
+load --module 7 ../code/stage26/boot_module.xsm
+load --int=timer ../code/stage26/timer.xsm
+load --int=10 ../code/stage26/int10.xsm
+load --init ../code/stage26/init.xsm
+load --idle ../code/stage26/idle.xsm
+load --module 5 ../code/stage26/scheduler.xsm
+load --int=7 ../code/stage26/int7.xsm
+load --module 4 ../code/stage26/device_man.xsm
+load --module 0 ../code/stage26/resource_man.xsm
+load --int=6 ../code/stage26/int6.xsm
+load --int=console ../code/stage26/console.xsm
+load --int=9 ../code/stage26/int9.xsm
+load --module 1 ../code/stage26/process_man.xsm
+load --module 2 ../code/stage26/memory_man.xsm
+load --int=disk ../code/stage26/disk_int.xsm
+load --exhandler ../code/stage26/exhandler.xsm
+load --int=8 ../code/stage26/int8.xsm
+rm linked_l.xsm
+load --exec ../code/stage26/linked_l.xsm
+load --int=11 ../code/stage26/int11.xsm
+load --int=15 ../code/stage26/int15.xsm
+load --int=13 ../code/stage26/int13.xsm
+load --int=14 ../code/stage26/int14.xsm
+load --int=4 ../code/stage26/int4.xsm
+load --int=5 ../code/stage26/int5.xsm
+load --module 3 ../code/stage26/file_man.xsm
+load --int=17 ../code/stage26/int17.xsm
+load --int=12 ../code/stage26/int12.xsm
+load --int=16 ../code/stage26/int16.xsm
+load --shell ../code/stage26/shell.xsm

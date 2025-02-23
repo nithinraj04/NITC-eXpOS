@@ -25,3 +25,7 @@ load --int=14 ../code/stage${stage}/int14.xsm
 load --int=4 ../code/stage${stage}/int4.xsm
 load --int=5 ../code/stage${stage}/int5.xsm
 load --module 3 ../code/stage${stage}/file_man.xsm
+load --int=17 ../code/stage${stage}/int17.xsm
+load --int=12 ../code/stage${stage}/int12.xsm
+load --int=16 ../code/stage${stage}/int16.xsm
+load --shell ../code/stage${stage}/shell.xsm
