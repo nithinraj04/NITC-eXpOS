@@ -1,0 +1,43 @@
+int main(){
+decl
+    int fd, temp, n;
+    str fname, uname, user;
+enddecl
+
+begin
+    write("Username: ");
+    read(user);
+
+    temp = exposcall("Getuid", user);
+
+    if(temp <= 0) then
+        write("User not exist");
+    else
+        fd = exposcall("Open", "root");
+
+        if(fd < 0) then
+            write("ru fail");
+        else
+            temp = 0;
+            while(temp >= 0) do
+                temp = exposcall("Read", fd, fname);
+                temp = exposcall("Seek", fd, 2);
+                temp = exposcall("Read", fd, uname);
+
+                if((fname != "-1") AND (uname == user)) then
+                    n = exposcall("Delete", fname);
+                    if(n < 0) then
+                        write("fail");
+                        write(n);
+                    endif;
+                endif;
+
+                temp = exposcall("Seek", fd, 4);
+            endwhile;
+        endif;
+    endif;
+
+    return 0;
+end
+
+}

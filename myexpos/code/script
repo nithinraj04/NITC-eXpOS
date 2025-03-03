@@ -29,3 +29,4 @@ load --int=17 ../code/stage${stage}/int17.xsm
 load --int=12 ../code/stage${stage}/int12.xsm
 load --int=16 ../code/stage${stage}/int16.xsm
 load --shell ../code/stage${stage}/shell.xsm
+load --module 6 ../code/stage${stage}/pager.xsm
