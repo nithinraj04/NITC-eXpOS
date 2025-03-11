@@ -1,6 +1,8 @@
 alias fn_num R1;
 alias arg1 R2;
 
+print "Paging";
+
 if(fn_num == SWAP_OUT) then
     R3 = -1;
 
@@ -147,6 +149,7 @@ endif;
 if(fn_num == SWAP_IN) then
     R3 = -1;
     R4 = 3;
+    
     while(R4 < 15) do
         R5 = PROCESS_TABLE + 16*R4;
         if([R5 + 6] == 0 || [R5 + 4] != READY) then

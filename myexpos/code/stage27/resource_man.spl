@@ -60,13 +60,13 @@ if(func_num == 4) then //acquire inode
         [PROCESS_TABLE + 16*arg_2 + 5] = arg_1;
 
         //-------My own implementation, proceed with caution--------//
-        multipush(R0, R1, R2, R3);
         [INODE_TABLE + 16*arg_1 + 5] = [INODE_TABLE + 16*arg_1 + 5] + 1;  //Increment wait count
+        multipush(R0, R1, R2, R3);
         call SCHEDULER;
         multipop(R0, R1, R2, R3);
+        [INODE_TABLE + 16*arg_1 + 5] = [INODE_TABLE + 16*arg_1 + 5] - 1;  //decrement wait count
     endwhile;
 
-    [INODE_TABLE + 16*arg_1 + 5] = [INODE_TABLE + 16*arg_1 + 5] - 1;  //decrement wait count
 
     if([INODE_TABLE + 16*arg_1 + 1] == -1) then //file got deleted by the time lock was acquired
         R0 = -1;

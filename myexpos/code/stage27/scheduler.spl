@@ -1,6 +1,6 @@
 alias curr_process R0;
 curr_process = [SYSTEM_STATUS_TABLE+1];
-
+R10 = curr_process;
 multipush(BP);
 
 R1 = PROCESS_TABLE + 16*curr_process; //efficiency
@@ -29,7 +29,22 @@ else
 
         curr_process = (curr_process+1)%15;
     endwhile;
+
+    if(curr_process == SHELL_PROCESS) then
+        R2 = 3;
+        while(R2 < 15) do
+            if([PROCESS_TABLE + 16*R2 + 4] == CREATED || [PROCESS_TABLE + 16*R2 + 4] == READY) then
+                curr_process = R2;
+                [PROCESS_TABLE + 16*2 + 4] = WAIT_PROCESS;
+                [PROCESS_TABLE + 16*2 + 5] = curr_process;
+                break;
+            endif;
+
+            R2 = R2 + 1;
+        endwhile;
+    endif;
 endif;
+
 
 R1 = PROCESS_TABLE + 16*curr_process; //efficiency
 

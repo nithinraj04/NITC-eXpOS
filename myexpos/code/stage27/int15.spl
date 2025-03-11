@@ -41,6 +41,12 @@ while(R4 < MAX_BUFFER) do
     R4 = R4 + 1;
 endwhile;
 
+R4 = 0;
+while(R4 < MAX_FILE_NUM) do
+    [INODE_TABLE + 16*R4 + 5] = -1;
+    inline "INR R4";
+endwhile;
+
 
 //store Inode table and user table
 multipush(R1, R2, R3);

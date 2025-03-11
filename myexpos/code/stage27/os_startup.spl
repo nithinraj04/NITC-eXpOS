@@ -96,4 +96,5 @@ R0 = PROCESS_TABLE + 15*16;
 PTBR = PAGE_TABLE_BASE;
 PTLR = 10;
 SP = 8*512;
+breakpoint;
 ireturn;

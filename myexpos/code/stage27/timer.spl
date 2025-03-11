@@ -59,4 +59,8 @@ restore;
 SP = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13];
 [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 1] + 9] = 0;
 
+if([SYSTEM_STATUS_TABLE + 1] == 15) then
+    breakpoint;
+endif;
+
 ireturn;

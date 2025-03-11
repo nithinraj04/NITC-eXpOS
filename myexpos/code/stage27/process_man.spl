@@ -3,8 +3,8 @@ alias fn_num R1;
 alias pid R2;
 
 if(fn_num == 1) then //get free pcb entry
-    R0 = 1;
-    while(R0 < 16) do
+    R0 = 3;
+    while(R0 < 15) do
         if([PROCESS_TABLE + 16*R0 + 4] == TERMINATED) then
             R1 = PROCESS_TABLE + 16*R0;
             [R1 + 1] = R0;

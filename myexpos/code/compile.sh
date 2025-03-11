@@ -9,12 +9,12 @@ for file in *; do
             *.spl)
                 # Compile SPL files
                 echo "Compiling SPL file: $file"
-                oslab spl "$file"
+                expos spl "$file"
                 ;;
             *.expl)
                 # Compile EXPL files
                 echo "Compiling EXPL file: $file"
-                oslab expl "$file"
+                expos expl "$file"
                 ;;
             *)
                 # Ignore other file types
@@ -27,5 +27,5 @@ echo "Compilation process completed."
 
 echo "Loading to xfs-interface..."
 parent_dir_path=$(pwd)
-oslab xfs-interface run "$parent_dir_path/script"
+expos xfs-interface run "$parent_dir_path/script"
 echo "Loaded from $parent_dir_path"
