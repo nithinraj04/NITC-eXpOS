@@ -1,0 +1,135 @@
+R1 = ACQUIRE_SCHED_LOCK;
+call ACCESS_CONTROL;
+
+alias curr_process R0;
+curr_process = [SYSTEM_STATUS_TABLE + 5*CORE + 1];
+multipush(BP);
+
+R1 = PROCESS_TABLE + 16*curr_process; //efficiency
+
+[R1 + 12] = SP%512;
+//user stack has already been saved in timer interrupt
+[R1 + 14] = PTBR;
+[R1 + 15] = PTLR;
+
+if(CORE == PRIMARY_CORE) then
+    if([SYSTEM_STATUS_TABLE + 5] != 0) then  //Swapping happening
+        R1 = PROCESS_TABLE + 16*SWAPPER_DAEMON;
+        if([R1 + 4] == READY || [R1 + 4] == CREATED) then
+            curr_process = SWAPPER_DAEMON;
+        else
+            curr_process = IDLE_PROCESS;
+        endif;
+    else
+        curr_process = (curr_process+1)%14;
+        while(1 == 1) do  //Allahu Akbar (idle kaakum)
+            
+            if([SYSTEM_STATUS_TABLE + 6] == curr_process) then
+                curr_process = (curr_process + 1)%14;
+                continue;
+            endif;
+
+            if([SYSTEM_STATUS_TABLE + 7] != 0 && [SYSTEM_STATUS_TABLE + 6] != IDLE2_PROCESS) then
+                curr_process = IDLE_PROCESS;
+                break;
+            endif;
+
+            R1 = PROCESS_TABLE + 16*curr_process;
+            if([R1 + 6] == 0) then //Not swapped
+                if([R1 + 4] == CREATED || [R1 + 4] == READY) then
+                    break;
+                endif;
+            endif;
+
+            curr_process = (curr_process+1)%14;
+        endwhile;
+
+        if(curr_process == SHELL_PROCESS) then
+            R2 = 3;
+            while(R2 < 14) do
+                if([SYSTEM_STATUS_TABLE + 6] == R2) then
+                    inline "INR R2";
+                    continue;
+                endif;
+                R3 = PROCESS_TABLE + 16*R2;
+                if([R3 + 4] == CREATED || [R3 + 4] == READY) then
+                    curr_process = R2;
+                    [PROCESS_TABLE + 16*SHELL_PROCESS + 4] = WAIT_PROCESS;
+                    [PROCESS_TABLE + 16*SHELL_PROCESS + 5] = R2;
+                    break;
+                endif;
+                inline "INR R2";
+            endwhile;
+        endif;
+    endif;
+else
+    curr_process = (curr_process+1)%15;
+    while(1 == 1) do  //Allahu Akbar (idle kaakum)
+        if([SYSTEM_STATUS_TABLE + 5] != 0 || [SYSTEM_STATUS_TABLE + 7] != 0) then
+            //Swapping or logout
+            curr_process = IDLE2_PROCESS;
+            break;
+        endif;
+
+        if(curr_process == IDLE_PROCESS || curr_process == LOGIN_PROCESS) then
+            curr_process = 3; //Cuz 15, 0, 1, 2 are not allowed
+            continue;
+        endif;
+
+        if(curr_process == SHELL_PROCESS || curr_process == SWAPPER_DAEMON) then
+            curr_process = 3;
+            continue;
+        endif;
+
+        if([SYSTEM_STATUS_TABLE + 1] == curr_process) then
+            curr_process = (curr_process + 1)%15;
+            continue;
+        endif;
+
+        R1 = PROCESS_TABLE + 16*curr_process;
+        if([R1 + 6] == 0) then //Not swapped
+            if([R1 + 4] == CREATED || [R1 + 4] == READY) then
+                break;
+            endif;
+        endif;
+
+        curr_process = (curr_process+1)%15;
+    endwhile; 
+endif;
+
+
+R1 = PROCESS_TABLE + 16*curr_process; //efficiency
+
+SP = 512*[R1 + 11] + [R1 + 12];
+PTBR = [R1 + 14];
+PTLR = [R1 + 15];
+
+[SYSTEM_STATUS_TABLE + 5*CORE + 1] = curr_process;
+
+if([R1 + 4] == CREATED) then
+    multipush(R1, R2);
+    R1 = RELEASE_LOCK;
+    R2 = SCHED_LOCK;
+    call ACCESS_CONTROL;
+    multipop(R1, R2);
+
+    SP = [PROCESS_TABLE + 16*curr_process + 13];
+    BP = [[PROCESS_TABLE + 16*curr_process + 11]*512]; //This value will be set by fork system call
+    [R1 + 4] = RUNNING;
+    [R1 + 9] = 0; //mode flag
+    ireturn;
+endif;
+
+[R1 + 4] = RUNNING;
+multipop(BP);
+
+R1 = RELEASE_LOCK;
+R2 = SCHED_LOCK;
+call ACCESS_CONTROL;
+
+//if(curr_process == 10 && CORE == 0) then
+//    breakpoint;
+//endif;
+
+return;
+

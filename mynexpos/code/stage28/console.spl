@@ -1,0 +1,32 @@
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 5*CORE + 1] + 13] = SP;
+if(CORE == PRIMARY_CORE) then
+    SP = 512*[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 1] + 11] - 1;
+else
+    SP = 512*[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 6] + 11] - 1;
+endif;
+
+backup;
+
+R1 = ACQUIRE_KERN_LOCK;
+call ACCESS_CONTROL;
+
+alias req_pid R0;
+req_pid = [TERMINAL_STATUS_TABLE + 5*CORE + 1];
+
+[PROCESS_TABLE + 16*req_pid + 8] = P0;
+
+//releasing the termnial
+multipush(R0, R1, R2);
+R1 = 9;
+R2 = req_pid;
+call RESOURCE_MANAGER;
+multipop(R0, R1, R2);
+
+R1 = RELEASE_LOCK;
+R2 = KERN_LOCK;
+call ACCESS_CONTROL;
+
+restore;
+
+SP = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 5*CORE + 1] + 13];
+ireturn;

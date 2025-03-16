@@ -1,0 +1,30 @@
+int main(){
+decl
+    int temp;
+    str uname, passwd;
+enddecl
+
+begin
+    while(1 == 1) do
+        write("#Login $");
+
+        write("Username ");
+        read(uname);
+
+        write("Password ");
+        read(passwd);
+
+        temp = exposcall("Login", uname, passwd);
+
+        if(temp == -1) then
+            write("Invalid cred");
+        endif;
+
+        if(temp == -2) then
+            write("Permission denied");
+        endif;
+    endwhile;
+
+    return 0;
+end
+}

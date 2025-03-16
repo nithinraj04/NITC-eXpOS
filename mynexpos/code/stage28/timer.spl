@@ -1,0 +1,80 @@
+//alias curr_pid R0;
+//curr_pid = [SYSTEM_STATUS_TABLE+1];
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 5*CORE + 1] + 13] = SP;
+
+if(CORE == PRIMARY_CORE) then
+    SP = 512 * [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 1]  + 11] - 1; 
+    //Don't really need the offset
+else
+    SP = 512 * [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 6]  + 11] - 1; 
+endif;
+
+
+backup;
+
+//-------------------Stage 27 stuff---------------------//
+if([SYSTEM_STATUS_TABLE + 5] != 0) then  //swapping initiated
+    if([SYSTEM_STATUS_TABLE + 1] == SWAPPER_DAEMON && CORE == PRIMARY_CORE) then
+        R1 = ACQUIRE_KERN_LOCK;
+        call ACCESS_CONTROL;
+
+        R1 = [SYSTEM_STATUS_TABLE + 5];  //Swap in or swap out
+        call PAGER_MODULE;
+
+        R1 = RELEASE_LOCK;
+        R2 = KERN_LOCK;
+        call ACCESS_CONTROL;
+    endif;
+else
+    if([SYSTEM_STATUS_TABLE + 2] < MEM_LOW) then
+        [SYSTEM_STATUS_TABLE + 5] = SWAP_OUT;
+    else
+        R1 = -1;
+        R4 = -1;  //indicate whether there is a swapped out process
+        R2 = 3;
+        while(R2 < 15) do
+            R3 = PROCESS_TABLE + 16*R2;
+            if([R3 + 6] == 1) then
+                R4 = 1;
+                if([R3 + 0] > MAX_TICK) then
+                    R1 = R2;
+                    break;
+                endif;
+            endif;
+
+            inline "INR R2";
+        endwhile;
+
+        if(R1 != -1 || (R4 == 1 && [SYSTEM_STATUS_TABLE + 2] > MEM_HIGH)) then
+            [SYSTEM_STATUS_TABLE + 5] = SWAP_IN;
+        endif;
+    endif;
+endif;
+
+//---------------end of stage 27 stuff-----------------------//
+
+
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 5*CORE +1] + 4] = READY;
+
+//Increment tick for every process
+R1 = 0;
+while(R1 < 16) do
+    R2 = PROCESS_TABLE + 16*R1;
+    [R2] = [R2] + 1;
+    
+    inline "INR R1";
+endwhile;
+
+call SCHEDULER;
+
+restore;
+
+[PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 5*CORE + 1] + 9] = 0;
+
+if(CORE == PRIMARY_CORE) then
+    SP = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 1]  + 13]; 
+else
+    SP = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 6]  + 13]; 
+endif;
+
+ireturn;

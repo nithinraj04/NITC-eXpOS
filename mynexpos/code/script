@@ -1,0 +1,34 @@
+load --os=primary ../code/stage${stage}/os_startup.xsm
+load --os=secondary ../code/stage${stage}/sec_os_startup.xsm
+load --module 7 ../code/stage${stage}/boot_module.xsm
+load --int=timer ../code/stage${stage}/timer.xsm
+load --int=10 ../code/stage${stage}/int10.xsm
+load --init ../code/stage${stage}/init.xsm
+load --idle ../code/stage${stage}/idle.xsm
+load --module 5 ../code/stage${stage}/scheduler.xsm
+load --int=7 ../code/stage${stage}/int7.xsm
+load --module 4 ../code/stage${stage}/device_man.xsm
+load --module 0 ../code/stage${stage}/resource_man.xsm
+load --int=6 ../code/stage${stage}/int6.xsm
+load --int=console ../code/stage${stage}/console.xsm
+load --int=9 ../code/stage${stage}/int9.xsm
+load --module 1 ../code/stage${stage}/process_man.xsm
+load --module 2 ../code/stage${stage}/memory_man.xsm
+load --int=disk ../code/stage${stage}/disk_int.xsm
+load --exhandler ../code/stage${stage}/exhandler.xsm
+load --int=8 ../code/stage${stage}/int8.xsm
+rm linked_l.xsm
+load --exec ../code/stage${stage}/linked_l.xsm
+load --int=11 ../code/stage${stage}/int11.xsm
+load --int=15 ../code/stage${stage}/int15.xsm
+load --int=13 ../code/stage${stage}/int13.xsm
+load --int=14 ../code/stage${stage}/int14.xsm
+load --int=4 ../code/stage${stage}/int4.xsm
+load --int=5 ../code/stage${stage}/int5.xsm
+load --module 3 ../code/stage${stage}/file_man.xsm
+load --int=17 ../code/stage${stage}/int17.xsm
+load --int=12 ../code/stage${stage}/int12.xsm
+load --int=16 ../code/stage${stage}/int16.xsm
+load --shell ../code/stage${stage}/shell.xsm
+load --module 6 ../code/stage${stage}/pager.xsm
+load --module 8 ../code/stage${stage}/access_control.xsm

@@ -1,0 +1,189 @@
+alias user_sp R1;
+user_sp = SP;
+
+alias ret_addr R2;
+ret_addr = [PTBR + 2*(user_sp-1)/512]*512 + (user_sp-1)%512;
+
+alias syscall_num R3;
+syscall_num = [[PTBR + 2*(user_sp-5)/512]*512 + (user_sp-5)%512];
+
+alias arg1 R4;
+arg1 = [[PTBR + 2*(user_sp-4)/512]*512 + (user_sp-4)%512];
+
+alias arg2 R5;
+arg2 = [[PTBR + 2*(user_sp-3)/512]*512 + (user_sp-3)%512];
+
+alias pid R6;
+pid = [SYSTEM_STATUS_TABLE + 5*CORE + 1];
+
+alias user_id R7;
+user_id = [SYSTEM_STATUS_TABLE];
+ 
+[PROCESS_TABLE + 16*pid + 9] = syscall_num;
+[PROCESS_TABLE + 16*pid + 13] = user_sp;
+SP = [PROCESS_TABLE + 16*pid + 11]*512 - 1;
+
+multipush(R1);
+R1 = ACQUIRE_KERN_LOCK;
+call ACCESS_CONTROL;
+multipop(R1);
+
+//----------------------fn def begins------------------------------//
+
+if(syscall_num == 22) then  //newusr
+    if(pid != 2 || user_id != 1) then
+        //Not shell or not root
+        [ret_addr] = -2;
+        goto return_to_user;
+    endif;
+
+    R8 = 0;
+    while(R8 < MAX_USER_NUM) do
+        if([USER_TABLE + 2*R8] == arg1) then
+            [ret_addr] = -1;
+            goto return_to_user;
+        endif;
+
+        R8 = R8 + 1;
+    endwhile;
+
+    R8 = 0;
+    while(R8 < MAX_USER_NUM) do
+        if([USER_TABLE + 2*R8] == -1) then
+            break;
+        endif;
+
+        R8 = R8 + 1;
+    endwhile;
+
+    if(R8 >= MAX_USER_NUM) then
+        [ret_addr] = -3;
+        goto return_to_user;
+    endif;
+
+    encrypt arg2;
+
+    [USER_TABLE + 2*R8 + 0] = arg1;
+    [USER_TABLE + 2*R8 + 1] = arg2;
+
+    [ret_addr] = 0;
+    goto return_to_user;
+endif;
+
+if(syscall_num == 23) then  //rem_usr
+    //Only root user can remove a user
+    if(pid != 2 || user_id != 1) then
+        [ret_addr] = -2;
+        goto return_to_user;
+    endif;
+
+    R8 = 0;
+    while(R8 < MAX_USER_NUM) do
+        if([USER_TABLE + 2*R8] == arg1) then
+            break;
+        endif;
+
+        R8 = R8 + 1;
+    endwhile;
+
+    if(R8 >= MAX_USER_NUM) then
+        //user not found
+        [ret_addr] = -1;
+        goto return_to_user;
+    endif;
+
+    if(R8 == 0 || R8 == 1) then
+        //Cannot delete root or kernel user
+        [ret_addr] = -2;
+        goto return_to_user;
+    endif;
+    
+    alias rm_username R9;
+    rm_username = [USER_TABLE + 2*R8];
+
+    R10 = 0;
+    while(R10 < MAX_FILE_NUM) do
+        if([ROOT_FILE + 8*R10 + 3] == rm_username) then
+            //Files owned by user still exists
+            [ret_addr] = -3;
+            goto return_to_user;
+        endif;
+
+        R10 = R10 + 1;
+    endwhile;
+    
+    [USER_TABLE + 2*R8 + 0] = -1;
+    [USER_TABLE + 2*R8 + 1] = -1;
+
+    [ret_addr] = 0;
+    goto return_to_user;
+endif;
+
+if(syscall_num == 24) then  //setpwd
+    if(pid != 2) then
+        [ret_addr] = -1;
+        goto return_to_user;
+    endif;
+
+    R8 = 0;
+    while(R8 < MAX_USER_NUM) do
+        if([USER_TABLE + 2*R8] == arg1) then
+            break;
+        endif;
+        
+        R8 = R8 + 1;
+    endwhile;
+
+    if(R8 >= MAX_USER_NUM) then
+        [ret_addr] = -2;
+        goto return_to_user;
+    endif;
+
+    if(user_id != R8 && user_id != ROOT) then
+        [ret_addr] = -1;
+        goto return_to_user;
+    endif;
+
+    encrypt arg2;
+
+    [USER_TABLE + 2*R8 + 1] = arg2;
+
+    [ret_addr] = 0;
+    goto return_to_user;
+endif;
+
+if(syscall_num == 25) then //get uname
+    if(arg1 < 0 || arg1 >= MAX_USER_NUM) then
+        [ret_addr] = -1;
+        goto return_to_user;
+    endif;
+
+    [ret_addr] = [USER_TABLE + 2*arg1];
+    goto return_to_user;
+endif;
+
+if(syscall_num == 26) then  //getuid
+    R8 = 0;
+    while(R8 < MAX_USER_NUM) do
+        if([USER_TABLE + 2*R8] == arg1) then
+            [ret_addr] = R8;
+            goto return_to_user;
+        endif;
+
+        R8 = R8 + 1;
+    endwhile;
+
+    [ret_addr] = -1;
+    goto return_to_user;
+endif;
+
+return_to_user:
+    multipush(R1, R2); 
+    R1 = RELEASE_LOCK;
+    R2 = KERN_LOCK;
+    call ACCESS_CONTROL;
+    multipop(R1, R2);
+
+    [PROCESS_TABLE + 16*pid + 9] = 0;
+    SP = user_sp;
+    ireturn;

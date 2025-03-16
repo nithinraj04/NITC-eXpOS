@@ -1,0 +1,32 @@
+load --os=primary ../code/stage28/os_startup.xsm
+load --os=secondary ../code/stage28/sec_os_startup.xsm
+load --module 7 ../code/stage28/boot_module.xsm
+load --int=timer ../code/stage28/timer.xsm
+load --int=10 ../code/stage28/int10.xsm
+load --init ../code/stage28/init.xsm
+load --idle ../code/stage28/idle.xsm
+load --module 5 ../code/stage28/scheduler.xsm
+load --int=7 ../code/stage28/int7.xsm
+load --module 4 ../code/stage28/device_man.xsm
+load --module 0 ../code/stage28/resource_man.xsm
+load --int=6 ../code/stage28/int6.xsm
+load --int=console ../code/stage28/console.xsm
+load --int=9 ../code/stage28/int9.xsm
+load --module 1 ../code/stage28/process_man.xsm
+load --module 2 ../code/stage28/memory_man.xsm
+load --int=disk ../code/stage28/disk_int.xsm
+load --exhandler ../code/stage28/exhandler.xsm
+load --int=8 ../code/stage28/int8.xsm
+load --int=11 ../code/stage28/int11.xsm
+load --int=15 ../code/stage28/int15.xsm
+load --int=13 ../code/stage28/int13.xsm
+load --int=14 ../code/stage28/int14.xsm
+load --int=4 ../code/stage28/int4.xsm
+load --int=5 ../code/stage28/int5.xsm
+load --module 3 ../code/stage28/file_man.xsm
+load --int=17 ../code/stage28/int17.xsm
+load --int=12 ../code/stage28/int12.xsm
+load --int=16 ../code/stage28/int16.xsm
+load --shell ../code/stage28/shell.xsm
+load --module 6 ../code/stage28/pager.xsm
+load --module 8 ../code/stage28/access_control.xsm

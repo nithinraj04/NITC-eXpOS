@@ -31,6 +31,9 @@ else
     endwhile;
 
     if(curr_process == SHELL_PROCESS) then
+        //This is my own implementation
+        //To fix the issue that the shell won't wait
+        //for its grand-children 
         R2 = 3;
         while(R2 < 15) do
             if([PROCESS_TABLE + 16*R2 + 4] == CREATED || [PROCESS_TABLE + 16*R2 + 4] == READY) then

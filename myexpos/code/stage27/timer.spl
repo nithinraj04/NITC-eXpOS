@@ -16,6 +16,7 @@ else
     if([SYSTEM_STATUS_TABLE + 2] < MEM_LOW) then
         [SYSTEM_STATUS_TABLE + 5] = SWAP_OUT;
     else
+        multipush(R1, R2, R3, R4);
         R1 = -1;
         R4 = -1;  //indicate whether there is a swapped out process
         R2 = 3;
@@ -35,6 +36,7 @@ else
         if(R1 != -1 || (R4 == 1 && [SYSTEM_STATUS_TABLE + 2] > MEM_HIGH)) then
             [SYSTEM_STATUS_TABLE + 5] = SWAP_IN;
         endif;
+        multipop(R1, R2, R3, R4);
     endif;
 endif;
 
@@ -44,6 +46,7 @@ endif;
 [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 4] = READY;
 
 //Increment tick for every process
+multipush(R1, R2);
 R1 = 0;
 while(R1 < 16) do
     R2 = PROCESS_TABLE + 16*R1;
@@ -51,6 +54,7 @@ while(R1 < 16) do
     
     inline "INR R1";
 endwhile;
+multipop(R1, R2);
 
 call SCHEDULER;
 
@@ -58,9 +62,5 @@ restore;
 
 SP = [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+1] + 13];
 [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 1] + 9] = 0;
-
-if([SYSTEM_STATUS_TABLE + 1] == 15) then
-    breakpoint;
-endif;
 
 ireturn;
