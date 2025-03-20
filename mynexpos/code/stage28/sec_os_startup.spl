@@ -42,6 +42,11 @@ SP = 8*512;
 PTBR = PAGE_TABLE_BASE + 14*20;
 PTLR = 10;
 
+[ACCESS_LOCK_TABLE + 3] = 0;
+[ACCESS_LOCK_TABLE + 4] = 0;
+[ACCESS_LOCK_TABLE + 5] = 0;
+[ACCESS_LOCK_TABLE + 6] = 0;
+
 print "END SEC OS";
 breakpoint;
 ireturn;

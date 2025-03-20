@@ -8,10 +8,6 @@ R1 = ACQUIRE_KERN_LOCK;
 call ACCESS_CONTROL;
 multipop(R1);
 
-if([DISK_STATUS_TABLE + 2] == 101) then
-    breakpoint;
-endif;
-
 [DISK_STATUS_TABLE] = 0;
 
 R0 = 1;

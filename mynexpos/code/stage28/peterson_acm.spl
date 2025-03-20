@@ -1,0 +1,67 @@
+alias fn_number R1;
+alias arg1 R2;
+
+if(fn_number == ACQUIRE_KERN_LOCK) then
+    if(CORE == SECONDARY_CORE) then
+        if([SYSTEM_STATUS_TABLE + 5] != 0 || [SYSTEM_STATUS_TABLE + 7] != 0) then
+            //paging or logout
+            [PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE+6] + 4] = READY;
+            backup;
+            call SCHEDULER; //I don't understand why, but let's see
+                            //edit: I understand now
+            restore;
+        endif;
+    endif;
+    
+    //I'm using ALT+3 as interest variable for C0 and 
+    //ALT+4 as interest variable for C1
+    [ACCESS_LOCK_TABLE + 3 + CORE] = 1;
+    [KERN_LOCK] = (CORE + 1) % 2;
+    while(
+        [ACCESS_LOCK_TABLE + 3 + (CORE + 1)%2] == 1
+        &&
+        [KERN_LOCK] == ((CORE + 1) % 2)
+        ) do
+            
+            continue;
+    endwhile;
+
+    return;
+endif;
+
+if(fn_number == ACQUIRE_SCHED_LOCK) then
+    //I'm using ALT+5 as interest variable for C0 and 
+    //ALT+6 as interest variable for C1
+    [ACCESS_LOCK_TABLE + 5 + CORE] = 1;
+    [SCHED_LOCK] = (CORE + 1) % 2;
+    while(
+        [ACCESS_LOCK_TABLE + 5 + (CORE + 1)%2] == 1
+        &&
+        [SCHED_LOCK] == (CORE + 1) % 2
+        ) do
+            
+            continue;
+    endwhile;
+
+    return;
+endif;
+
+if(fn_number == ACQUIRE_GLOCK) then
+    while(tsl(GLOCK) == 1) do
+        continue;
+    endwhile;
+
+    return;
+endif;
+
+if(fn_number == RELEASE_LOCK) then
+    if(arg1 == KERN_LOCK) then
+        [ACCESS_LOCK_TABLE + 3 + CORE] = 0;
+    endif;
+
+    if(arg1 == SCHED_LOCK) then
+        [ACCESS_LOCK_TABLE + 5 + CORE] = 0;
+    endif;
+
+    return;
+endif;

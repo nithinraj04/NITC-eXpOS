@@ -37,6 +37,7 @@ endif;
 
 if(EPN >= 4) then
     R5 = [DISK_MAP_TABLE + 10*[SYSTEM_STATUS_TABLE+1] + EPN];
+    multipush(EPN);
     if(R5 == -1) then
         multipush(R1, R2, R5);
         R1 = 3; //exit process
@@ -48,11 +49,17 @@ if(EPN >= 4) then
 
         return;
     endif;
-
+    multipop(EPN);
+    multipush(EPN);
     R1 = 5; //get code page
     R2 = R5;
     call MEMORY_MANAGER;
-
+    multipop(EPN);
+    
+    if(EPN < 4) then
+        print "Fuck";
+        breakpoint;
+    endif;
     [PTBR + 2*EPN] = R0;
     [PTBR + 2*EPN + 1] = "1100";
 

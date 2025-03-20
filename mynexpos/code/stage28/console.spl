@@ -11,7 +11,7 @@ R1 = ACQUIRE_KERN_LOCK;
 call ACCESS_CONTROL;
 
 alias req_pid R0;
-req_pid = [TERMINAL_STATUS_TABLE + 5*CORE + 1];
+req_pid = [TERMINAL_STATUS_TABLE + 1];
 
 [PROCESS_TABLE + 16*req_pid + 8] = P0;
 

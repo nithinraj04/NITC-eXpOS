@@ -1,8 +1,6 @@
 alias fn_num R1;
 alias arg1 R2;
 
-print "Paging";
-
 if(fn_num == SWAP_OUT) then
     R3 = -1;
 

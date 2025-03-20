@@ -173,16 +173,17 @@ if(fn_num == 5) then  //kill all
     R3 = 2;
     while(R3 < MAX_PROC_NUM) do
         if(R3 == SWAPPER_DAEMON || R3 == IDLE2_PROCESS) then
-            //This is relevant only in stage 27 and ideally
-            //shouldn't be implemented now. But since I know that I will forget
-            //to do this in stage 27 (as it not mentioned in documentation), I 
-            //am doing it here itself
             //R3 = R3 + 1;
             inline "INR R3";
             continue;
         endif;
 
-        if(R3 != [SYSTEM_STATUS_TABLE + 5*CORE + 1] && [PROCESS_TABLE + 16*R3 + 4] != TERMINATED) then
+        if(
+            R3 != [SYSTEM_STATUS_TABLE + 5*CORE + 1] 
+            && 
+            [PROCESS_TABLE + 16*R3 + 4] != TERMINATED
+        ) then
+
             multipush(R1, R2, R3);
             R1 = EXIT_PROCESS;
             R2 = R3;

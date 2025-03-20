@@ -26,11 +26,13 @@ multipop(R1);
 
 reset;
 
-multipush(R1, R2);
-R1 = RELEASE_LOCK;
-R2 = SCHED_LOCK;
-call ACCESS_CONTROL;
-multipop(R1, R2);
+//multipush(R1, R2);
+//R1 = RELEASE_LOCK;
+//R2 = SCHED_LOCK;
+//call ACCESS_CONTROL;
+//multipop(R1, R2);
+
+[ACCESS_LOCK_TABLE + 6] = 0;
 
 //kill all user processes
 multipush(R1, R2, R3);
@@ -59,7 +61,6 @@ while(R4 < MAX_FILE_NUM) do
     [INODE_TABLE + 16*R4 + 5] = -1;
     inline "INR R4";
 endwhile;
-
 
 //store Inode table and user table
 multipush(R1, R2, R3);
