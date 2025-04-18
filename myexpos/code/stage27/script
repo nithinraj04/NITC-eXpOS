@@ -30,3 +30,11 @@ load --int=12 ../code/stage27/int12.xsm
 load --int=16 ../code/stage27/int16.xsm
 load --shell ../code/stage27/shell.xsm
 load --module 6 ../code/stage27/pager.xsm
+rm merge.xsm
+rm m_store.xsm
+rm m_sort.xsm
+rm m_merge.xsm
+load --exec ../code/stage27/merge.xsm
+load --exec ../code/stage27/m_store.xsm
+load --exec ../code/stage27/m_sort.xsm
+load --exec ../code/stage27/m_merge.xsm

@@ -65,6 +65,8 @@ else               //write to file
     if([INODE_TABLE + 16*inode_index + 4] == 0) then //exclusive access
         if(
             [INODE_TABLE + 16*inode_index + 3] != [SYSTEM_STATUS_TABLE + 0]
+            &&
+            [SYSTEM_STATUS_TABLE + 0] != 1
         ) then
             [ret_addr] = -3;
             goto return_to_user;

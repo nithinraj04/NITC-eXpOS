@@ -37,11 +37,8 @@ begin
   a=exposcall("Read", fp, word);
   while(a!=-2) do
     write(word);
-    if(a != -2) then
-        a=exposcall("Read", fp, word);
-    endif;
+    a=exposcall("Read", fp, word);
   endwhile;
-
   x=exposcall("Close", fp);
   return 1;
 end

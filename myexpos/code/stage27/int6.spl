@@ -86,7 +86,7 @@ else
         [OPEN_FILE_TABLE + 4*open_file_index + 2] = lseek+1;
 
     else 
-        if(lseek == [INODE_TABLE + 16*inode_index + 2]) then //lseek is equal to file ka size
+        if(lseek >= [INODE_TABLE + 16*inode_index + 2]) then //lseek is equal to file ka size
             multipush(R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11);
             R1 = 5; //release inode
             R2 = inode_index;

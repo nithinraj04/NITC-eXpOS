@@ -133,7 +133,7 @@ MOV R0,"Write"
 PUSH R0
 MOV R0,-2
 PUSH R0
-MOV R1,"Permission denieðÒ5Àÿÿÿÿa"
+MOV R1,"Permission denieðÒ0M"
 PUSH R1
 ADD SP,2
 CALL 0

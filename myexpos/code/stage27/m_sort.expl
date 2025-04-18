@@ -129,7 +129,6 @@ int main()
       p=alloc();
       p.data=word;
       p.next=null;
-
       if(head==null) then
         head=p;
         q=p;

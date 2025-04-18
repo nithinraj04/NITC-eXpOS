@@ -52,7 +52,7 @@ if(CORE == PRIMARY_CORE) then
                     continue;
                 endif;
                 R3 = PROCESS_TABLE + 16*R2;
-                if([R3 + 4] == CREATED || [R3 + 4] == READY) then
+                if([R3 + 4] == CREATED || [R3 + 4] == READY || [R3 + 4] == RUNNING) then
                     curr_process = R2;
                     [PROCESS_TABLE + 16*SHELL_PROCESS + 4] = WAIT_PROCESS;
                     [PROCESS_TABLE + 16*SHELL_PROCESS + 5] = R2;
