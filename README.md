@@ -40,3 +40,7 @@ Given a virtual string machine (XSM) and its instruction set, I built an Operati
 
 ## Some useful tools
 - [Helper](https://github.com/nithinraj04/OSlab-helper) - Scripts to run XSM, SPL compiler and eXpL compiler globally in your system. Also contains configuration for setting up syntax highlighting for spl and expl files in neovim. 
+
+## A bug that I identified
+
+Click [here](https://groups.google.com/g/xos-users/c/EntErSPgvAI/m/ppHDxiCfAAAJ) to know about the bug. One potential fix for the second bug that doesn't require a lot of changes in current implementation is to keep a **wait counter**. Basically have a counter entry in inode table, which keeps track of the number of processes waiting for the particular inode. Use an inode for file creation only if the counter is zero. This gives the waiting processes enough time to realize that the file has been deleted.
